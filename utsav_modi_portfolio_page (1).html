@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Utsav Modi | Full Stack Developer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+html { scroll-behavior: smooth; }
+body { margin:0; background:#050510; color:white; font-family:Arial, sans-serif; overflow-x:hidden; }
+
+/* Starfield */
+canvas { position:fixed; top:0; left:0; z-index:-3; }
+
+/* Mouse Glow */
+.mouse-glow{
+ position:fixed; width:350px; height:350px;
+ border-radius:50%;
+ background:radial-gradient(circle, rgba(99,102,241,0.25) 0%, transparent 60%);
+ pointer-events:none; transform:translate(-50%,-50%);
+ z-index:-2;
+}
+
+/* Sections */
+.section{ min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:40px 20px; }
+
+/* Card */
+.card{
+ width:280px; padding:25px; border-radius:20px;
+ background:rgba(255,255,255,0.05);
+ border:1px solid rgba(255,255,255,0.1);
+ backdrop-filter:blur(20px);
+ transition:transform 0.2s ease;
+ transform-style:preserve-3d;
+}
+
+.card:hover{ box-shadow:0 0 25px rgba(168,85,247,0.6); }
+
+/* Neon Border */
+.card::before{
+ content:''; position:absolute; inset:-2px; border-radius:20px;
+ background:linear-gradient(45deg,#6366f1,#a855f7,#ec4899,#6366f1);
+ background-size:400%; z-index:-1;
+ animation:neon 6s linear infinite;
+}
+@keyframes neon{ 0%{background-position:0%}100%{background-position:400%} }
+
+/* Floating Social */
+.social{
+ position:fixed; right:20px; top:50%; transform:translateY(-50%);
+ display:flex; flex-direction:column; gap:15px;
+}
+.social a{
+ background:rgba(255,255,255,0.1);
+ padding:10px 12px; border-radius:50%;
+ transition:0.3s;
+}
+.social a:hover{ background:#6366f1; transform:scale(1.2); }
+
+h1{
+ font-size:60px; font-weight:800;
+ background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899);
+ -webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;
+}
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<div class="mouse-glow" id="glow"></div>
+
+<!-- Floating Social Icons -->
+<div class="social">
+ <a href="https://github.com/utsavmodi665/CODING-SAMURAI-INTERNSHIP-TASK">GITHUB</a>
+</div>
+
+<!-- Hero Section -->
+<section class="section">
+ <h1>Utsav Modi</h1>
+ <h2 id="typing" class="mt-4 text-xl text-gray-300"></h2>
+ <a href="#skills" class="mt-10 text-indigo-400 animate-bounce">↓ Scroll</a>
+</section>
+
+<!-- Skills Section -->
+<section id="skills" class="section">
+ <h2 class="text-3xl mb-10">My Skills</h2>
+ <div style="display:flex; flex-wrap:wrap; gap:30px; justify-content:center;">
+  <div class="card" data-tilt>
+   <h3 class="text-xl font-semibold mb-2">Python</h3>
+   <p class="text-gray-400">Scalable backend systems & automation.</p>
+  </div>
+  <div class="card" data-tilt>
+   <h3 class="text-xl font-semibold mb-2">Django</h3>
+   <p class="text-gray-400">Secure APIs & powerful web apps.</p>
+  </div>
+  <div class="card" data-tilt>
+   <h3 class="text-xl font-semibold mb-2">PHP (Laravel)</h3>
+   <p class="text-gray-400">Modern MVC & performance systems.</p>
+  </div>
+ </div>
+</section>
+
+<!-- Contact Section -->
+<section class="section">
+ <h2 class="text-3xl mb-6">Let’s Connect</h2>
+ <p class="text-gray-400">Open to collaboration & new opportunities.</p>
+</section>
+
+<script>
+/* Starfield */
+const canvas=document.getElementById('stars');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+let stars=[];
+for(let i=0;i<120;i++){
+ stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5,v:Math.random()*0.5});
+}
+function animate(){
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ ctx.fillStyle='white';
+ stars.forEach(s=>{
+  s.y+=s.v;
+  if(s.y>canvas.height)s.y=0;
+  ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();
+ });
+ requestAnimationFrame(animate);
+}
+animate();
+
+/* Mouse Glow */
+const glow=document.getElementById('glow');
+document.addEventListener('mousemove',e=>{
+ glow.style.left=e.clientX+'px';
+ glow.style.top=e.clientY+'px';
+});
+
+/* Typing Effect */
+const text="🚀 Full Stack Developer | Python • Django • Laravel";
+let i=0;
+function type(){
+ if(i<text.length){
+  document.getElementById('typing').innerHTML+=text.charAt(i);
+  i++; setTimeout(type,50);
+ }
+}
+type();
+
+/* 3D Tilt */
+document.querySelectorAll('[data-tilt]').forEach(card=>{
+ card.addEventListener('mousemove',e=>{
+  const rect=card.getBoundingClientRect();
+  const x=e.clientX-rect.left;
+  const y=e.clientY-rect.top;
+  const centerX=rect.width/2;
+  const centerY=rect.height/2;
+  const rotateX=((y-centerY)/10);
+  const rotateY=((centerX-x)/10);
+  card.style.transform=`rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+ });
+ card.addEventListener('mouseleave',()=>{
+  card.style.transform='rotateX(0) rotateY(0)';
+ });
+});
+
+window.addEventListener('resize',()=>{
+ canvas.width=window.innerWidth;
+ canvas.height=window.innerHeight;
+});
+</script>
+
+</body>
+</html>
